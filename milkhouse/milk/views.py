@@ -1,82 +1,78 @@
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-from .models import Seller, Buyer
-from .serializers import SellerSerializer, BuyerSerializer
 
-# Seller Views
-@api_view(['GET', 'POST'])
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Seller, Buyer, Transaction
+from .forms import SellerForm, BuyerForm
+
 def seller_list(request):
-    if request.method == 'GET':
-        sellers = Seller.objects.all()
-        serializer = SellerSerializer(sellers, many=True)
-        return Response({"Sellers": serializer.data})
-    
-    elif request.method == 'POST':
-        serializer = SellerSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    sellers = Seller.objects.all()
+    return render(request, 'seller_list.html', {'sellers': sellers})
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def seller_detail(request, id):
-    try:
-        seller = Seller.objects.get(pk=id)
-    except Seller.DoesNotExist:
-        return Response({"error": "Seller not found"}, status=status.HTTP_404_NOT_FOUND)
+def seller_detail(request, seller_id):
+    seller = get_object_or_404(Seller, id=seller_id)
+    transactions = Transaction.objects.filter(seller=seller).order_by('date')
+    return render(request, 'seller_detail.html', {'seller': seller, 'transactions': transactions})
 
-    if request.method == 'GET':
-        serializer = SellerSerializer(seller)
-        return Response({"Seller": serializer.data})
-    
-    elif request.method == 'PUT':
-        serializer = SellerSerializer(seller, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"Seller": serializer.data}, status=status.HTTP_200_OK)
-        return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-    
-    elif request.method == 'DELETE':
+def seller_add(request):
+    if request.method == 'POST':
+        form = SellerForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('seller_list')
+    else:
+        form = SellerForm()
+    return render(request, 'seller_form.html', {'form': form})
+
+def seller_edit(request, seller_id):
+    seller = get_object_or_404(Seller, id=seller_id)
+    if request.method == 'POST':
+        form = SellerForm(request.POST, instance=seller)
+        if form.is_valid():
+            form.save()
+            return redirect('seller_list')
+    else:
+        form = SellerForm(instance=seller)
+    return render(request, 'seller_form.html', {'form': form})
+
+def seller_delete(request, seller_id):
+    seller = get_object_or_404(Seller, id=seller_id)
+    if request.method == 'POST':
         seller.delete()
-        return Response({"message": "Seller deleted"}, status=status.HTTP_204_NO_CONTENT)
+        return redirect('seller_list')
+    return render(request, 'seller_confirm_delete.html', {'seller': seller})
 
-# Buyer Views
-@api_view(['GET', 'POST'])
 def buyer_list(request):
-    if request.method == 'GET':
-        buyers = Buyer.objects.all()
-        serializer = BuyerSerializer(buyers, many=True)
-        return Response({"Buyers": serializer.data})
-    
-    elif request.method == 'POST':
-        serializer = BuyerSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    buyers = Buyer.objects.all()
+    return render(request, 'buyer_list.html', {'buyers': buyers})
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def buyer_detail(request, id):
-    try:
-        buyer = Buyer.objects.get(pk=id)
-    except Buyer.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+def buyer_detail(request, buyer_id):
+    buyer = get_object_or_404(Buyer, id=buyer_id)
+    transactions = Transaction.objects.filter(buyer=buyer).order_by('date')
+    return render(request, 'buyer_detail.html', {'buyer': buyer, 'transactions': transactions})
 
-    if request.method == 'GET':
-        serializer = BuyerSerializer(buyer)
-        return Response({"Buyer": serializer.data})
-    
-    elif request.method == 'PUT':
-        serializer = BuyerSerializer(buyer, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    elif request.method == 'DELETE':
+def buyer_add(request):
+    if request.method == 'POST':
+        form = BuyerForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('buyer_list')
+    else:
+        form = BuyerForm()
+    return render(request, 'buyer_form.html', {'form': form})
+
+def buyer_edit(request, buyer_id):
+    buyer = get_object_or_404(Buyer, id=buyer_id)
+    if request.method == 'POST':
+        form = BuyerForm(request.POST, instance=buyer)
+        if form.is_valid():
+            form.save()
+            return redirect('buyer_list')
+    else:
+        form = BuyerForm(instance=buyer)
+    return render(request, 'buyer_form.html', {'form': form})
+
+def buyer_delete(request, buyer_id):
+    buyer = get_object_or_404(Buyer, id=buyer_id)
+    if request.method == 'POST':
         buyer.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return redirect('buyer_list')
+    return render(request, 'buyer_confirm_delete.html', {'buyer': buyer})

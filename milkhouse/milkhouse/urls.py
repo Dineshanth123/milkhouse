@@ -18,5 +18,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('milk.urls')),  # Include the milk app URLs
+    path('api/', include('milk.urls')),  
 ]

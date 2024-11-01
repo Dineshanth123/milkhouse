@@ -1,21 +1,29 @@
+
+
 from django.db import models
 
 class Seller(models.Model):
-    user = models.CharField(max_length=25)  # This will store a username or other identifier
-    mobile_number = models.CharField(max_length=15)  # Field for mobile number
-    date_of_selling = models.DateField()
-    quantity_litres = models.DecimalField(max_digits=5, decimal_places=2)
-    cost = models.DecimalField(max_digits=10, decimal_places=2)
-
+    name = models.CharField(max_length=255,default="unknown")
+    mobile = models.CharField(max_length=15)
+    address = models.CharField(max_length=255, default="Unknown address")
     def __str__(self):
-        return f"Seller: {self.user}, Mobile: {self.mobile_number}, Date: {self.date_of_selling}"
+        return f"{self.name} ({self.mobile})" 
+
 
 class Buyer(models.Model):
-    user = models.CharField(max_length=25)  # This will store a username or other identifier
-    mobile_number = models.CharField(max_length=15)  # Field for mobile number
-    date_of_buying = models.DateField()
-    quantity_litres = models.DecimalField(max_digits=5, decimal_places=2)
-    cost = models.DecimalField(max_digits=10, decimal_places=2)
-
+    name = models.CharField(max_length=255,default="unknown")
+    mobile = models.CharField(max_length=15)
+    address = models.CharField(max_length=255, default="Unknown address")
     def __str__(self):
-        return f"Buyer: {self.user}, Mobile: {self.mobile_number}, Date: {self.date_of_buying}"
+        return f"{self.name} ({self.mobile})"
+
+
+class Transaction(models.Model):
+    seller = models.ForeignKey(Seller, on_delete=models.CASCADE, null=True, blank=True)
+    buyer = models.ForeignKey(Buyer, on_delete=models.CASCADE, null=True, blank=True)
+    date = models.DateField()
+    litres = models.FloatField(default=0.0)
+
+    transaction_type = models.CharField(max_length=10)  
+    def __str__(self):
+        return f"Transaction on {self.date} - {self.transaction_type}"

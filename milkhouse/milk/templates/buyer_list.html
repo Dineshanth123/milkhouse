@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buyers List</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Buyers List</h1>
+        <a href="{% url 'buyer_add' %}">Add New Buyer</a>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Mobile</th>
+                    <th>Address</th>
+                    <th>Actions</th> 
+                </tr>
+            </thead>
+            <tbody>
+                {% for buyer in buyers %}
+                    <tr>
+                        <td>{{ buyer.id }}</td>
+                        <td>{{ buyer.name }}</td>
+                        <td>{{ buyer.mobile }}</td>
+                        <td>{{ buyer.address }}</td>
+                        <td>
+                            <a href="{% url 'buyer_edit' buyer.id %}">Edit</a> | 
+                            <a href="{% url 'buyer_delete' buyer.id %}">Delete</a>|
+                            <a href="{% url 'buyer_detail' buyer.id %}">View</a>
+                        </td> 
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5">No buyers found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

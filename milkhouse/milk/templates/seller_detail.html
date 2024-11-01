@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ seller.name }}'s Details</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+    <h1>{{ seller.name }}'s Details</h1>
+    <p>Mobile: {{ seller.mobile }}</p>
+    <p>Address: {{ seller.address }}</p>
+    <h2>Transactions</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Litres</th>
+                <th>Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transactions %}
+            <tr>
+                <td>{{ transaction.date }}</td>
+                <td>{{ transaction.litres }}</td>
+                <td>{{ transaction.transaction_type }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'seller_list' %}">Back to Sellers List</a>
+</body>
+</html>
