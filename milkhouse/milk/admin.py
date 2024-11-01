@@ -5,15 +5,15 @@ from .models import Seller, Buyer, Transaction
 
 @admin.register(Seller)
 class SellerAdmin(admin.ModelAdmin):
-    list_display = ('name', 'mobile', 'address')
+    list_display = ('id','name', 'mobile', 'address')
     search_fields = ('name', 'mobile')
-    list_filter = ('name',)
+    list_filter = ('name','mobile')
 
 @admin.register(Buyer)
 class BuyerAdmin(admin.ModelAdmin):
-    list_display = ('name', 'mobile', 'address')
+    list_display = ('id','name', 'mobile', 'address')
     search_fields = ('name', 'mobile')
-    list_filter = ('name',)
+    list_filter = ('name','mobile')
 
 @admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):

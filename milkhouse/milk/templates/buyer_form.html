@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Add/Edit Buyer</title>
+    <title>Edit Buyer</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'styles.css' %}">
 </head>
 <body>
-    <h1>Add/Edit Buyer</h1>
+    <h1>Edit Buyer</h1>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}

@@ -3,17 +3,17 @@
 from django.db import models
 
 class Seller(models.Model):
-    name = models.CharField(max_length=255,default="unknown")
+    name = models.CharField(max_length=255)
     mobile = models.CharField(max_length=15)
-    address = models.CharField(max_length=255, default="Unknown address")
+    address = models.CharField(max_length=255)
     def __str__(self):
         return f"{self.name} ({self.mobile})" 
 
 
 class Buyer(models.Model):
-    name = models.CharField(max_length=255,default="unknown")
+    name = models.CharField(max_length=255)
     mobile = models.CharField(max_length=15)
-    address = models.CharField(max_length=255, default="Unknown address")
+    address = models.CharField(max_length=255)
     def __str__(self):
         return f"{self.name} ({self.mobile})"
 
