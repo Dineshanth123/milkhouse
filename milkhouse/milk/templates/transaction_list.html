@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Transaction List</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+    <h1>All Transactions</h1>
+    <a href="{% url 'add_transaction' %}">Add New Transaction</a>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Buyer</th>
+            <th>Seller</th>
+            <th>Date</th>
+            <th>Litres</th>
+            
+        </tr>
+        {% for transaction in transactions %}
+        <tr>
+            <td>{{ transaction.id }}</td>
+            <td>{{ transaction.buyer }}</td>
+            <td>{{ transaction.seller }}</td>
+            <td>{{ transaction.date }}</td>
+            <td>{{ transaction.litres }}</td>
+            
+        </tr>
+        
+        {% endfor %}
+    </table>
+</body>
+</html>

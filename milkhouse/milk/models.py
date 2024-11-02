@@ -26,4 +26,4 @@ class Transaction(models.Model):
 
     transaction_type = models.CharField(max_length=10)  
     def __str__(self):
-        return f"Transaction on {self.date} - {self.transaction_type}"
+        return f"{self.date}-{self.buyer} - {self.seller} - {self.amount}"

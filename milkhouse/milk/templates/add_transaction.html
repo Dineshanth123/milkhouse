@@ -1,0 +1,34 @@
+<!-- add_transaction.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Transaction</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+    <h1>Add New Transaction</h1>
+    <form method="post">
+        {% csrf_token %}
+        
+        <label for="mobile_number">Mobile Number:</label>
+        <input type="text" name="mobile_number" id="mobile_number" required><br><br>
+        
+        <label for="transaction_type">Transaction Type:</label>
+        <select name="transaction_type" id="transaction_type" required>
+            <option value="purchase">Purchase</option>
+            <option value="sale">Sale</option>
+        </select><br><br>
+        
+        <label for="litres">Litres:</label>
+        <input type="number" step="0.01" name="litres" id="litres" required><br><br>
+        
+        <label for="date">Date:</label>
+        <input type="date" name="date" id="date" required><br><br>
+        
+        <button type="submit">Add Transaction</button>
+    </form>
+    <a href="{% url 'transaction_list' %}">Back to Transaction List</a>
+</body>
+</html>

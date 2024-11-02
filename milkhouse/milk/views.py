@@ -2,6 +2,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Seller, Buyer, Transaction
 from .forms import SellerForm, BuyerForm
+from django.http import HttpResponse
+from datetime import datetime
 
 def seller_list(request):
     sellers = Seller.objects.all()
@@ -76,3 +78,35 @@ def buyer_delete(request, buyer_id):
         buyer.delete()
         return redirect('buyer_list')
     return render(request, 'buyer_confirm_delete.html', {'buyer': buyer})
+
+def transaction_list(request):
+    transactions = Transaction.objects.all()
+    return render(request, 'transaction_list.html', {'transactions': transactions})
+
+def add_transaction(request):
+    if request.method == 'POST':
+        mobile_number = request.POST['mobile_number']
+        transaction_type = request.POST['transaction_type']
+        litres = request.POST['litres']
+        date_str = request.POST['date']
+        date = datetime.strptime(date_str, '%Y-%m-%d')
+        
+        if transaction_type == 'purchase':
+            try:
+                buyer = Buyer.objects.get(mobile=mobile_number)
+                transaction = Transaction(buyer=buyer, litres=litres, date=date, transaction_type=transaction_type)
+            except Buyer.DoesNotExist:
+                return render(request, 'add_transaction.html', {'error': 'Buyer with this mobile number not found.'})
+        
+        elif transaction_type == 'sale':
+            try:
+                seller = Seller.objects.get(mobile=mobile_number)
+                transaction = Transaction(seller=seller, litres=litres, date=date, transaction_type=transaction_type)
+            except Seller.DoesNotExist:
+                return render(request, 'add_transaction.html', {'error': 'Seller with this mobile number not found.'})
+        
+        transaction.save()
+        return redirect('transaction_list')
+    
+    return render(request, 'add_transaction.html')
+    

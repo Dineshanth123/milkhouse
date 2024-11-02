@@ -17,6 +17,6 @@ class BuyerAdmin(admin.ModelAdmin):
 
 @admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ('date', 'seller', 'buyer', 'litres', 'transaction_type')
+    list_display = ('id','date', 'seller', 'buyer', 'litres', 'transaction_type')
     search_fields = ('seller__name', 'buyer__name')
     list_filter = ('transaction_type', 'date')
