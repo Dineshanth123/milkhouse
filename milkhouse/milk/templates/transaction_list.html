@@ -4,31 +4,127 @@
     <meta charset="UTF-8">
     <title>Transaction List</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'styles.css' %}">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            background: url("{% static 'images/img1.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .container {
+            width: 90%;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #007bff;
+        }
+
+        a {
+            text-decoration: none;
+            color: white;
+            background: #007bff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .action-buttons a {
+            padding: 8px 12px;
+            border-radius: 5px;
+            color: white;
+            font-size: 14px;
+            display: inline-block;
+            margin: 3px;
+        }
+
+        .edit-btn {
+            background-color: #ffc107;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+        }
+
+        .action-buttons a:hover {
+            opacity: 0.8;
+        }
+    </style>
 </head>
 <body>
-    <h1>All Transactions</h1>
-    <a href="{% url 'add_transaction' %}">Add New Transaction</a>
-    <table border="1">
-        <tr>
-            <th>ID</th>
-            <th>Buyer</th>
-            <th>Seller</th>
-            <th>Date</th>
-            <th>Litres</th>
-            
-        </tr>
-        {% for transaction in transactions %}
-        <tr>
-            <td>{{ transaction.id }}</td>
-            <td>{{ transaction.buyer }}</td>
-            <td>{{ transaction.seller }}</td>
-            <td>{{ transaction.date }}</td>
-            <td>{{ transaction.litres }}</td>
-            
-        </tr>
-        
-        {% endfor %}
-    </table>
+
+    <div class="container">
+        <h1>All Transactions</h1>
+        <a href="{% url 'home' %}" style="background: #007bff;">Go Home</a>
+        <a href="{% url 'add_transaction' %}">Add New Transaction</a>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Buyer</th>
+                    <th>Seller</th>
+                    <th>Date</th>
+                    <th>Litres</th>
+                    <th>Transaction Type</th>
+                    <th>Payment</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                <tr>
+                    <td>{{ transaction.id }}</td>
+                    <td>{{ transaction.buyer }}</td>
+                    <td>{{ transaction.seller }}</td>
+                    <td>{{ transaction.date }}</td>
+                    <td>{{ transaction.litres }}</td>
+                    <td>{{ transaction.transaction_type }}</td>
+                    <td>{{ transaction.payment }}</td>
+                    <td>{{ transaction.status }}</td>
+                    <td class="action-buttons">
+                        <a href="{% url 'edit_transaction' transaction.id %}" class="edit-btn">Edit</a> 
+                        <a href="{% url 'delete_transaction' transaction.id %}" class="delete-btn">Delete</a>
+                    </td>  
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9">No transactions found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
 </body>
 </html>

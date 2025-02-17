@@ -5,11 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buyers List</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'styles.css' %}">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            background: url("{% static 'images/img1.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .container {
+            width: 80%;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #007bff;
+        }
+
+        a {
+            text-decoration: none;
+            color: white;
+            background: #007bff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .action-buttons a {
+            padding: 8px 12px;
+            border-radius: 5px;
+            color: white;
+            font-size: 14px;
+            display: inline-block;
+            margin: 3px;
+        }
+
+        .edit-btn {
+            background-color: #ffc107;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+        }
+
+        .view-btn {
+            background-color: #17a2b8;
+        }
+
+        .action-buttons a:hover {
+            opacity: 0.8;
+        }
+    </style>
 </head>
 <body>
+
     <div class="container">
         <h1>Buyers List</h1>
+        <a href="{% url 'home' %}" style="background: #007bff;">Go Home</a>
         <a href="{% url 'buyer_add' %}">Add New Buyer</a>
         <table>
             <thead>
@@ -28,10 +108,10 @@
                         <td>{{ buyer.name }}</td>
                         <td>{{ buyer.mobile }}</td>
                         <td>{{ buyer.address }}</td>
-                        <td>
-                            <a href="{% url 'buyer_edit' buyer.id %}">Edit</a> | 
-                            <a href="{% url 'buyer_delete' buyer.id %}">Delete</a>|
-                            <a href="{% url 'buyer_detail' buyer.id %}">View</a>
+                        <td class="action-buttons">
+                            <a href="{% url 'buyer_edit' buyer.id %}" class="edit-btn">Edit</a> 
+                            <a href="{% url 'buyer_delete' buyer.id %}" class="delete-btn">Delete</a>
+                            <a href="{% url 'buyer_detail' buyer.id %}" class="view-btn">View</a>
                         </td> 
                     </tr>
                 {% empty %}
@@ -42,5 +122,6 @@
             </tbody>
         </table>
     </div>
+
 </body>
 </html>

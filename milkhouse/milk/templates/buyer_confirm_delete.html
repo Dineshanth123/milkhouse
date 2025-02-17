@@ -4,13 +4,74 @@
     <title>Delete Buyer</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'styles.css' %}">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: url("{% static 'images/img1.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 400px;
+        }
+
+        h1 {
+            color: #dc3545;
+            font-size: 20px;
+        }
+
+        button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #c82333;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 15px;
+            text-decoration: none;
+            color: white;
+            background: #007bff;
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+
+        a:hover {
+            background: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h1>Are you sure you want to delete {{ buyer.name }}?</h1>
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit">Yes, delete</button>
-    </form>
-    <a href="{% url 'buyer_list' %}">No, go back</a>
+
+    <div class="container">
+        <h1>Are you sure you want to delete <strong>{{ buyer.name }}</strong>?</h1>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit">Yes, Delete</button>
+        </form>
+        <a href="{% url 'buyer_list' %}">No, Go Back</a>
+    </div>
+
 </body>
 </html>

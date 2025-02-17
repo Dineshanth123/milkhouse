@@ -4,30 +4,122 @@
     <title>{{ buyer.name }}'s Details</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'styles.css' %}">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            background: url("{% static 'images/img1.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #007bff;
+        }
+
+        h2, h3 {
+            color: #333;
+        }
+
+        p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: white;
+            background: #007bff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 15px;
+        }
+
+        .back-link:hover {
+            background: #0056b3;
+        }
+
+        .pending-amount {
+            font-size: 18px;
+            font-weight: bold;
+            color: #dc3545;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>{{ buyer.name }}'s Details</h1>
-    <p>Mobile: {{ buyer.mobile }}</p>
-    <p>Address: {{ buyer.address }}</p>
-    <h2>Transactions</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Litres</th>
-                <th>Type</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for transaction in transactions %}
-            <tr>
-                <td>{{ transaction.date }}</td>
-                <td>{{ transaction.litres }}</td>
-                <td>{{ transaction.transaction_type }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <a href="{% url 'buyer_list' %}">Back to Buyers List</a>
+
+    <div class="container">
+        <h1>{{ buyer.name }}'s Details</h1>
+        <p><strong>Mobile:</strong> {{ buyer.mobile }}</p>
+        <p><strong>Address:</strong> {{ buyer.address }}</p>
+
+        <h2>Transactions</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Litres</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                <tr>
+                    <td>{{ transaction.date }}</td>
+                    <td>{{ transaction.litres }}</td>
+                    <td>{{ transaction.transaction_type }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3">No transactions found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h3 class="pending-amount">Total Pending Amount: ₹{{ total_pending_amount }}</h3>
+
+        <a href="{% url 'buyer_list' %}" class="back-link">Back to Buyers List</a>
+    </div>
+
 </body>
 </html>

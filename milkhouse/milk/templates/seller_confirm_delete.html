@@ -4,13 +4,81 @@
     <title>Delete Seller</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'styles.css' %}">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            background: url("{% static 'images/img1.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        h1 {
+            color: #dc3545;
+            font-size: 22px;
+        }
+
+        p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        button {
+            background-color: #dc3545;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background-color: #c82333;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 15px;
+            text-decoration: none;
+            color: white;
+            background: #007bff;
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+
+        .back-link:hover {
+            background: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h1>Are you sure you want to delete {{ seller.name }}?</h1>
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit">Yes, delete</button>
-    </form>
-    <a href="{% url 'seller_list' %}">No, go back</a>
+
+    <div class="container">
+        <h1>Are you sure you want to delete <br> <strong>{{ seller.name }}</strong>?</h1>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit">Yes, delete</button>
+        </form>
+        <a href="{% url 'seller_list' %}" class="back-link">No, go back</a>
+    </div>
+
 </body>
 </html>

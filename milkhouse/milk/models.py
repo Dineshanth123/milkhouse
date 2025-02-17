@@ -17,11 +17,23 @@ class Buyer(models.Model):
 
 
 class Transaction(models.Model):
-    seller = models.ForeignKey(Seller, on_delete=models.CASCADE, null=True, blank=True)
-    buyer = models.ForeignKey(Buyer, on_delete=models.CASCADE, null=True, blank=True)
+    TRANSACTION_TYPES = [
+        ('credit', 'Credit'),
+        ('debit', 'Debit'),
+    ]
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('completed', 'Completed'),
+        ('canceled', 'Canceled'),
+    ]
+    
+    seller = models.ForeignKey(Seller, on_delete=models.CASCADE,default=None,null=True,blank=True)
+    buyer = models.ForeignKey(Buyer, on_delete=models.CASCADE,default=None,null=True,blank=True)
     date = models.DateField()
-    litres = models.FloatField(default=0.0)
+    litres = models.DecimalField(max_digits=5, decimal_places=2,default=0)  
+    transaction_type = models.CharField(max_length=15, choices=TRANSACTION_TYPES)
+    payment = models.DecimalField(max_digits=10, decimal_places=2,default=0)  
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')  
 
-    transaction_type = models.CharField(max_length=10)  
     def __str__(self):
-        return f"{self.date}-{self.buyer} - {self.seller} - {self.amount}"
+        return f"Transaction {self.id} - {self.transaction_type} - {self.payment} - {self.status}"

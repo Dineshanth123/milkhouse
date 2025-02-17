@@ -1,8 +1,15 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Seller, Buyer, Transaction
 from .forms import SellerForm, BuyerForm
+from .forms import TransactionForm
 from django.http import HttpResponse
 from datetime import datetime
+from django.db.models import Sum
+from django.contrib import messages
+
+def home(request):
+    return render(request, 'home.html')
+
 
 def seller_list(request):
     sellers = Seller.objects.all()
@@ -11,7 +18,8 @@ def seller_list(request):
 def seller_detail(request, seller_id):
     seller = get_object_or_404(Seller, id=seller_id)
     transactions = Transaction.objects.filter(seller=seller).order_by('date')
-    return render(request, 'seller_detail.html', {'seller': seller, 'transactions': transactions})
+    total_pending_amount = transactions.filter(status='pending').aggregate(Sum('payment'))['payment__sum'] or 0
+    return render(request, 'seller_detail.html', {'seller': seller, 'transactions': transactions,'total_pending_amount': total_pending_amount,})
 
 def seller_add(request):
     if request.method == 'POST':
@@ -48,7 +56,8 @@ def buyer_list(request):
 def buyer_detail(request, buyer_id):
     buyer = get_object_or_404(Buyer, id=buyer_id)
     transactions = Transaction.objects.filter(buyer=buyer).order_by('date')
-    return render(request, 'buyer_detail.html', {'buyer': buyer, 'transactions': transactions})
+    total_pending_amount = transactions.filter(status='pending').aggregate(Sum('payment'))['payment__sum'] or 0
+    return render(request, 'buyer_detail.html', {'buyer': buyer, 'transactions': transactions,'total_pending_amount': total_pending_amount,})
 
 def buyer_add(request):
     if request.method == 'POST':
@@ -82,30 +91,67 @@ def transaction_list(request):
     transactions = Transaction.objects.all()
     return render(request, 'transaction_list.html', {'transactions': transactions})
 
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import Seller, Buyer, Transaction
+
 def add_transaction(request):
-    if request.method == 'POST':
-        mobile_number = request.POST['mobile_number']
-        transaction_type = request.POST['transaction_type']
-        litres = request.POST['litres']
-        date_str = request.POST['date']
-        date = datetime.strptime(date_str, '%Y-%m-%d')
-        
-        if transaction_type == 'purchase':
-            try:
-                buyer = Buyer.objects.get(mobile=mobile_number)
-                transaction = Transaction(buyer=buyer, litres=litres, date=date, transaction_type=transaction_type)
-            except Buyer.DoesNotExist:
-                return render(request, 'add_transaction.html', {'error': 'Buyer with this mobile number not found.'})
-        
-        elif transaction_type == 'sale':
-            try:
-                seller = Seller.objects.get(mobile=mobile_number)
-                transaction = Transaction(seller=seller, litres=litres, date=date, transaction_type=transaction_type)
-            except Seller.DoesNotExist:
-                return render(request, 'add_transaction.html', {'error': 'Seller with this mobile number not found.'})
-        
+    if request.method == "POST":
+        mobile_number = request.POST.get('mobile_number')
+        seller = Seller.objects.filter(mobile=mobile_number).first()
+        buyer = Buyer.objects.filter(mobile=mobile_number).first()
+
+        if not seller and not buyer:
+            messages.error(request, "This mobile number is not registered as either a Seller or a Buyer.")
+            return redirect('add_transaction')
+
+        transaction_type = request.POST.get('transaction_type')
+
+        if seller and transaction_type == "buy":
+            messages.error(request, "This mobile number belongs to a seller, not a buyer. Please select the correct transaction type.")
+            return redirect('add_transaction')
+        elif buyer and transaction_type == "sell":  
+            messages.error(request, "This mobile number belongs to a buyer, not a seller. Please select the correct transaction type.")
+            return redirect('add_transaction')
+
+        litres = request.POST.get('litres')
+        date = request.POST.get('date')
+        payment = request.POST.get('payment')
+        status = request.POST.get('status')
+
+        seller_instance = seller if seller else None
+        buyer_instance = buyer if buyer else None
+
+        transaction = Transaction(
+            seller=seller_instance,
+            buyer=buyer_instance,
+            date=date,
+            litres=litres,
+            transaction_type=transaction_type,
+            payment=payment,
+            status=status
+        )
         transaction.save()
+
+        messages.success(request, "Transaction added successfully!")
         return redirect('transaction_list')
-    
+
     return render(request, 'add_transaction.html')
-    
+
+def edit_transaction(request, transaction_id):
+    transaction = get_object_or_404(Transaction, id=transaction_id)
+    if request.method == "POST":
+        form = TransactionForm(request.POST, instance=transaction)
+        if form.is_valid():
+            form.save()
+            return redirect('transaction_list')
+    else:
+        form = TransactionForm(instance=transaction)
+    return render(request, 'transaction_form.html', {'form': form})
+
+def delete_transaction(request, transaction_id):
+    transaction = get_object_or_404(Transaction, id=transaction_id)
+    if request.method == "POST":
+        transaction.delete()
+        return redirect('transaction_list')
+    return render(request, 'transaction_confirm_delete.html', {'transaction': transaction})

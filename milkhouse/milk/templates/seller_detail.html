@@ -4,30 +4,123 @@
     <title>{{ seller.name }}'s Details</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'styles.css' %}">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            background: url("{% static 'images/img1.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+        }
+
+        h1 {
+            color: #007bff;
+            font-size: 24px;
+        }
+
+        p {
+            font-size: 16px;
+            color: #555;
+            margin: 5px 0;
+        }
+
+        h2 {
+            color: #28a745;
+            font-size: 20px;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 15px;
+            text-decoration: none;
+            color: white;
+            background: #007bff;
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+
+        .back-link:hover {
+            background: #0056b3;
+        }
+
+        h3 {
+            color: #dc3545;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1>{{ seller.name }}'s Details</h1>
-    <p>Mobile: {{ seller.mobile }}</p>
-    <p>Address: {{ seller.address }}</p>
-    <h2>Transactions</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Litres</th>
-                <th>Type</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for transaction in transactions %}
-            <tr>
-                <td>{{ transaction.date }}</td>
-                <td>{{ transaction.litres }}</td>
-                <td>{{ transaction.transaction_type }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <a href="{% url 'seller_list' %}">Back to Sellers List</a>
+
+    <div class="container">
+        <h1>{{ seller.name }}'s Details</h1>
+        <p><strong>Mobile:</strong> {{ seller.mobile }}</p>
+        <p><strong>Address:</strong> {{ seller.address }}</p>
+
+        <h2>Transactions</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Litres</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                <tr>
+                    <td>{{ transaction.date }}</td>
+                    <td>{{ transaction.litres }}</td>
+                    <td>{{ transaction.transaction_type }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3">No transactions found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h3>Total Pending Amount: ₹{{ total_pending_amount }}</h3>
+        <a href="{% url 'seller_list' %}" class="back-link">Back to Sellers List</a>
+    </div>
+
 </body>
 </html>
